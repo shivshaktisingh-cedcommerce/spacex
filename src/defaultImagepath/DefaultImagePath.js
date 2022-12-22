@@ -1,0 +1,1 @@
+export const defaultImagePath= "https://grassworksmanufacturing.com/wp-content/themes/i3-digital/images/no-image-available.png";
