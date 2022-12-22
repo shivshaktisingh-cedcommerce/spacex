@@ -7,14 +7,19 @@ import { launchApi } from "../api/AllApi";
 import FetchApiCustom from "../hook/FetchApiCustom";
 import CardComponent from "./CardComponent";
 import DropdownComponent from "./DropdownComponent";
-import { v4 as uuidv4 } from "uuid";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 
 export default function Home() {
-
+  let [searchParams, setSearchParams] = useSearchParams();
   let params1 = new URLSearchParams(document.location.search);
   let sort = params1.get("order")
+  if(sort!=='asc' && sort!=='desc'){
+    let params = {order:'asc'};
+    sort = 'asc';
+    setSearchParams(params);
+  }
+  console.log(sort)
   const scrolltop = useRef();
   scrolltop.current = 300;
   const navigate = useNavigate();
@@ -24,7 +29,6 @@ export default function Home() {
   const [order, setOrder] = useState(sort);
   const limit = 9;
   const [loading, setloading] = useState(false);
-  let [searchParams, setSearchParams] = useSearchParams();
   const [extractDataFromApi] = FetchApiCustom();
 
 
@@ -67,7 +71,7 @@ export default function Home() {
   window.addEventListener("scroll", onScroll);
 
   useEffect(() => {
-    let params = { order: order };
+    let params = {order: order===null?'desc':order};
     setSearchParams(params);
     let temp = [];
     let url = launchApi + `?order=${order}&offset=${offset}&limit=${limit}`;
@@ -113,9 +117,9 @@ export default function Home() {
               />
             </div>
           );
-        })}
-        {loading ? <CircularProgress color="inherit" /> : ""}
+        })}   
       </div>
+      {loading ? <CircularProgress color="inherit" /> : ""}
     </div>
   );
 }

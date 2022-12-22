@@ -3,9 +3,7 @@ import Button from "@mui/material/Button";
 import { CircularProgress, MenuItem, Select } from "@mui/material";
 
 export default function DropdownComponent(props) {
-  const [tempOrder, setTempOrder] = useState(
-    sessionStorage.getItem("order") || "desc"
-  );
+  const [tempOrder, setTempOrder] = useState(props.order);
 
   const handleChange = (e) => {
     setTempOrder(e.target.value);
@@ -20,7 +18,7 @@ export default function DropdownComponent(props) {
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
-          value={tempOrder}
+          value={tempOrder===null?'desc':tempOrder}
           label="Sort by"
           onChange={handleChange}
         >
