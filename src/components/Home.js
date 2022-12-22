@@ -12,17 +12,21 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 
 export default function Home() {
+
+  let params1 = new URLSearchParams(document.location.search);
+  let sort = params1.get("order")
   const scrolltop = useRef();
   scrolltop.current = 300;
   const navigate = useNavigate();
   const [offset, setOffset] = useState(0);
   const interval = useRef();
   const [data, setData] = useState([]);
-  const [order, setOrder] = useState(sessionStorage.getItem("order") || "desc");
+  const [order, setOrder] = useState(sort);
   const limit = 9;
   const [loading, setloading] = useState(false);
   let [searchParams, setSearchParams] = useSearchParams();
   const [extractDataFromApi] = FetchApiCustom();
+
 
   const handleNewPage = (item) => {
     navigate(`/details/${item.id}`);
@@ -63,9 +67,9 @@ export default function Home() {
   window.addEventListener("scroll", onScroll);
 
   useEffect(() => {
-    let temp = [];
     let params = { order: order };
     setSearchParams(params);
+    let temp = [];
     let url = launchApi + `?order=${order}&offset=${offset}&limit=${limit}`;
     setloading(true);
     extractDataFromApi(url).then((res) => {

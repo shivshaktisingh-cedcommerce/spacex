@@ -12,7 +12,6 @@ export default function DropdownComponent(props) {
   };
   const handleClick = () => {
     props.setOrder(tempOrder);
-    sessionStorage.setItem("order", tempOrder);
   };
 
   return (
