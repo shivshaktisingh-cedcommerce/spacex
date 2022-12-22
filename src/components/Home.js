@@ -12,12 +12,14 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 
 export default function Home() {
+  const scrolltop = useRef();
+  scrolltop.current = 300;
   const navigate = useNavigate();
   const [offset, setOffset] = useState(0);
   const interval = useRef();
   const [data, setData] = useState([]);
   const [order, setOrder] = useState(sessionStorage.getItem("order") || "desc");
-  const [limit, setLimit] = useState(9);
+  const limit = 9;
   const [loading, setloading] = useState(false);
   let [searchParams, setSearchParams] = useSearchParams();
   const [extractDataFromApi] = FetchApiCustom();
@@ -28,13 +30,14 @@ export default function Home() {
 
   const onScroll = () => {
     if (
-      window.innerHeight + window.scrollY >=
-      document.body.offsetHeight - 700
+      window.scrollY + window.innerHeight >=
+      document.documentElement.scrollHeight
     ) {
+      scrolltop.current = scrolltop.current + 300;
       clearTimeout(interval.current);
       interval.current = setTimeout(() => {
-        let tempOffset = limit;
-        setOffset(limit);
+        let tempOffset = offset + 9;
+        setOffset(tempOffset);
         let temp = [...data];
         let url =
           launchApi + `?order=${order}&offset=${tempOffset}&limit=${limit}`;
@@ -54,7 +57,7 @@ export default function Home() {
           setData(temp);
           setloading(false);
         });
-      }, 500);
+      }, 1000);
     }
   };
   window.addEventListener("scroll", onScroll);
@@ -63,11 +66,11 @@ export default function Home() {
     let temp = [];
     let params = { order: order };
     setSearchParams(params);
-    let url = launchApi + `?order=${order}&offset=0&limit=${limit}`;
+    let url = launchApi + `?order=${order}&offset=${offset}&limit=${limit}`;
     setloading(true);
     extractDataFromApi(url).then((res) => {
       if (res.length > 0) {
-        setloading(!loading);
+        setloading(true);
       }
       res.map((item) => {
         let obj = {
@@ -84,18 +87,17 @@ export default function Home() {
       setloading(false);
     });
   }, [order]);
-  console.log("")
 
   return (
     <div>
       <DropdownComponent order={order} setOrder={setOrder} loading={loading} />
-      <p>Total results:{data.length}</p>
+      <p>Total results:{offset + 9}</p>
       <div className="all_repetitive_card_container">
         {data.map((item) => {
           return (
             <div
               className="single_card"
-              key={uuidv4()}
+              key={item.id}
               onClick={() => handleNewPage(item)}
             >
               <CardComponent
