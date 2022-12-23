@@ -1,20 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircularProgress } from "@mui/material";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { launchApi } from "../api/AllApi";
 import { defaultImagePath } from "../defaultImagepath/DefaultImagePath";
-import FetchApiCustom from "../hook/FetchApiCustom";
+
 
 export default function OneItem() {
-  const [extractDataFromApi] = FetchApiCustom();
   const [res, setRes] = useState({});
   const { id } = useParams();
 
   useEffect(() => {
     let url = launchApi + `/${id}`;
-    extractDataFromApi(url).then((res) => {
-      setRes(res);
+    axios(url).then((res) => {
+      setRes(res.data);
+      console.log(res)
     });
   }, []);
 
