@@ -26,7 +26,7 @@ export default function Home() {
   const [offset, setOffset] = useState(0);
   const [data, setData] = useState([]);
   const [loading, setloading] = useState(false);
-  const [error, setError] = useState(false); 
+  const [error, setError] = useState(false);
   const handleNewPage = (item) => {
     navigate(`/details/${item.id}`);
   };
@@ -36,9 +36,9 @@ export default function Home() {
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && !startedIntersecting) {
-          if(offset<=totalElements.current){
+          if (offset <= totalElements.current) {
             let tempOffset = offset + 9;
-            setOffset(tempOffset);               
+            setOffset(tempOffset);
           }
         }
       });
@@ -48,7 +48,9 @@ export default function Home() {
   );
 
   useEffect(() => {
-    setTimeout(() => {startedIntersecting= false}, 1500)
+    setTimeout(() => {
+      startedIntersecting = false;
+    }, 1500);
   }, []);
 
   const handleChange = (e) => {
@@ -75,20 +77,20 @@ export default function Home() {
       });
       setData(temp);
       setloading(false);
+      console.log(data)
     });
   }, [order]);
-  useEffect(()=>{
-    axios(launchApi).then((res)=>{
+  useEffect(() => {
+    axios(launchApi).then((res) => {
       totalElements.current = res.data.length;
-    })
-  },[])
+    });
+  }, []);
 
   useEffect(() => {
-   
     setloading(true);
     setError(false);
     let temp = [...data];
-     let cancel;
+    let cancel;
     let url = launchApi + `?order=${order}&offset=${offset}&limit=9`;
     axios({ url: url, cancelToken: new axios.CancelToken((c) => (cancel = c)) })
       .then((res) => {
@@ -112,7 +114,7 @@ export default function Home() {
       });
     return () => cancel();
   }, [offset]);
-  console.log(offset)
+  console.log(offset);
   return (
     <div>
       <div className="uppersection">
@@ -170,7 +172,9 @@ export default function Home() {
         })}
       </div>
       <div style={{ textAlign: "center", marginTop: 5 }}>
-        {loading && totalElements.current>=data.length && <CircularProgress color="primary" />}
+        {loading && totalElements.current >= data.length && (
+          <CircularProgress color="primary" />
+        )}
       </div>
       <div style={{ textAlign: "center", marginTop: 5 }}>
         {error && "Error..."}
